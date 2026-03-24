@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+.mypy_cache/
+
+# ML artifacts (large files go to S3/MLflow)
+data/raw/
+data/processed/
+*.pkl
+*.joblib
+*.h5
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Docker
+*.log
+
+# IDE
+.vscode/settings.json
+.idea/

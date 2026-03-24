@@ -1,0 +1,36 @@
+# ML core
+numpy==1.26.4
+scipy==1.13.0
+scikit-learn==1.4.2
+xgboost==2.0.3
+shap==0.45.0
+pywavelets==1.6.0
+
+# API
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+pydantic==2.7.1
+
+# MLflow
+mlflow==2.13.0
+boto3==1.34.100
+
+# Monitoring
+evidently==0.4.30
+prometheus-fastapi-instrumentator==6.1.0
+
+# Database
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.30
+alembic==1.13.1
+redis==5.0.4
+
+# Dev / testing
+pytest==8.2.0
+pytest-asyncio==0.23.6
+httpx==0.27.0
+pre-commit==3.7.0
+black==24.4.2
+ruff==0.4.4
+mypy==1.10.0
