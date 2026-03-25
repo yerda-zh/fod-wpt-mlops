@@ -1,0 +1,10 @@
+time_mean
+ptp
+time_skew
+time_kurtosis
+impulse_factor
+harmonic_2_ratio
+spec_centroid
+wav_entropy_approx
+wav_energy_detail_1
+wav_high_freq_ratio

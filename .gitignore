@@ -30,3 +30,8 @@ frontend/dist/
 # IDE
 .vscode/settings.json
 .idea/
+
+# Model artifacts — stored in S3/MLflow, not Git
+models/*.joblib
+
+.ipynb_checkpoints/

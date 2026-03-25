@@ -15,4 +15,9 @@ repos:
     rev: v1.10.0
     hooks:
       - id: mypy
-        additional_dependencies: [pydantic, fastapi]
+        args: [--explicit-package-bases]
+        additional_dependencies:
+          - pydantic
+          - fastapi
+          - numpy
+          - pandas-stubs
