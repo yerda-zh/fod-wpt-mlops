@@ -21,3 +21,5 @@ repos:
           - fastapi
           - numpy
           - pandas-stubs
+          - pytest
+          - prometheus-fastapi-instrumentator
