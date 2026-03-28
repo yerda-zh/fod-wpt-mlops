@@ -21,7 +21,7 @@ transmitter coil current waveforms to detect metallic objects on charging pads.
 - Training data: 3,680 samples (70/30 stratified split, z-score normalized)
 
 ## Current build phase
-Week 3-4: Docker + CI/CD
+Week 5-6: React frontend dashboard
 
 ## Completed
 - feature_extractor.py — 49 features, FEATURE_ORDER, compute_feature_vector()
@@ -31,7 +31,10 @@ Week 3-4: Docker + CI/CD
 - api/routes/predict.py — POST /predict, GET /health, GET /metrics
 - main.py — FastAPI app, lifespan, CORS, Prometheus instrumentation
 - tests/unit/test_feature_extractor.py — 8 tests, all passing
-- tests/integration/test_predict_endpoint.py — 8 tests, all passing
+- tests/integration/test_predict_endpoint.py — 8 tests, mocked for CI
+- Dockerfile — multi-stage build, ~300MB runtime image
+- docker-compose.yml — api, db, redis, prometheus, grafana
+- .github/workflows/cicd.yml — test → build → deploy placeholder
 
 ## Commands
 - Activate venv: source .venv/bin/activate
