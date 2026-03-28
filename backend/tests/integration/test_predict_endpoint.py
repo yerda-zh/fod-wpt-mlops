@@ -1,4 +1,5 @@
 import io
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
@@ -10,11 +11,30 @@ from backend.app.main import app
 # Fixtures
 # ---------------------------------------------------------------------------
 
+_MOCK_PREDICT_RESULT = {
+    "prediction": 1,
+    "label": "FOD detected",
+    "confidence": 0.92,
+    "probabilities": {"no_object": 0.08, "fod_detected": 0.92},
+    "latency_ms": 15.0,
+    "model_version": "v1",
+}
+
 
 @pytest.fixture(scope="module")
 def client():
-    with TestClient(app) as c:
-        yield c
+    with (
+        patch(
+            "backend.app.core.model_loader._load_artifacts",
+            new_callable=MagicMock,
+        ),
+        patch(
+            "backend.app.core.model_loader.predict",
+            return_value=_MOCK_PREDICT_RESULT,
+        ),
+    ):
+        with TestClient(app) as c:
+            yield c
 
 
 @pytest.fixture(scope="module")
