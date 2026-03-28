@@ -35,5 +35,4 @@ pre-commit==3.7.0
 black==24.4.2
 ruff==0.15.7
 mypy==1.10.0
-numpy==1.26.4
 pandas-stubs==3.0.0.260204

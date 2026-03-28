@@ -1,0 +1,21 @@
+# Exclude files and directories that should not be copied into the Docker build
+# context — keeps images small and prevents secrets/dev artifacts from leaking.
+
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.git/
+.github/
+notebooks/
+data/
+mlruns/
+.env
+.env.*
+frontend/node_modules/
+frontend/dist/
+infrastructure/
+monitoring/grafana/
+*.md
