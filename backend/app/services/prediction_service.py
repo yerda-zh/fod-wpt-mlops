@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 from fastapi import HTTPException
+from datetime import datetime, timezone
 
 from backend.app.core import model_loader
 from backend.app.models.prediction import Prediction, SessionLocal
@@ -41,6 +42,7 @@ def run_prediction(file_bytes: bytes) -> dict:
                     fod_detected_prob=result["probabilities"]["fod_detected"],
                     latency_ms=result["latency_ms"],
                     model_version=result["model_version"],
+                    created_at=datetime.now(timezone.utc),
                 )
             )
             db.commit()

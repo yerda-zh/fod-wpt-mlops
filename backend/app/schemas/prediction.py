@@ -33,3 +33,9 @@ class HealthResponse(BaseModel):
     status: str
     model_version: str
     timestamp: str
+
+
+class HistoryResponse(PredictionResponse):
+    model_config = ConfigDict(frozen=True, protected_namespaces=())
+    id: str
+    created_at: str
