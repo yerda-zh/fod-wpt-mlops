@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from backend.app.api.routes.history import router as history_router
 from backend.app.api.routes.predict import router
 from backend.app.core import model_loader
 
@@ -26,5 +27,6 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(history_router)
 
 Instrumentator().instrument(app).expose(app)

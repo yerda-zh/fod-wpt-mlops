@@ -11,6 +11,8 @@ import joblib
 import numpy as np
 import pandas as pd
 import os
+import shap
+from typing import TypedDict
 
 from backend.ml.pipelines.feature_extractor import FEATURE_ORDER, compute_feature_vector
 
@@ -33,20 +35,28 @@ SELECTED_FEATURES = [
 
 _MODELS_DIR = Path(os.getenv("MODELS_DIR", Path(__file__).parents[3] / "models"))
 
+
+class TopFeature(TypedDict):
+    name: str
+    shap_value: float
+
+
 _scaler = None
 _model = None
+_explainer = None
 
 _LABELS = {0: "No object", 1: "FOD detected"}
 
 
 def _load_artifacts() -> None:
     """Load scaler and model from disk on first call; no-op on subsequent calls."""
-    global _scaler, _model
+    global _scaler, _model, _explainer
     if _scaler is None:
         _scaler = joblib.load(_MODELS_DIR / "FOD_Scaler_20260202_173744.joblib")
         _model = joblib.load(
             _MODELS_DIR / "Random_Forest_(RF)_FOD_Model_20260202_173744.joblib"
         )
+        _explainer = shap.TreeExplainer(_model)
 
 
 def predict(t: np.ndarray, x: np.ndarray) -> dict:
@@ -72,6 +82,7 @@ def predict(t: np.ndarray, x: np.ndarray) -> dict:
     _load_artifacts()
     assert _scaler is not None
     assert _model is not None
+    assert _explainer is not None
 
     # 1. Extract 49 features → shape (49,)
     vec = compute_feature_vector(t, x)
@@ -91,7 +102,20 @@ def predict(t: np.ndarray, x: np.ndarray) -> dict:
     # 6. Class probabilities
     proba = _model.predict_proba(df_sel)[0]  # shape (2,)
 
-    # 7. Return structured result
+    # 7. SHAP explanations — shap_values returns list[ndarray] for binary RF
+    shap_vals = _explainer.shap_values(df_sel)  # list of 2 arrays, shape (1, 10) each
+    shap_for_fod = shap_vals[0, :, 1]
+
+    top_features: list[TopFeature] = sorted(
+        [
+            TopFeature(name=name, shap_value=float(val))
+            for name, val in zip(SELECTED_FEATURES, shap_for_fod)
+        ],
+        key=lambda d: abs(d["shap_value"]),
+        reverse=True,
+    )[:5]
+
+    # 8. Return structured result
     return {
         "prediction": pred_class,
         "label": _LABELS[pred_class],
@@ -100,4 +124,5 @@ def predict(t: np.ndarray, x: np.ndarray) -> dict:
             "no_object": float(proba[0]),
             "fod_detected": float(proba[1]),
         },
+        "top_features": top_features,
     }

@@ -8,6 +8,13 @@ class Probabilities(BaseModel):
     fod_detected: float
 
 
+class TopFeature(BaseModel):
+    model_config = ConfigDict(frozen=True, protected_namespaces=())
+
+    name: str
+    shap_value: float
+
+
 class PredictionResponse(BaseModel):
     model_config = ConfigDict(frozen=True, protected_namespaces=())
 
@@ -17,6 +24,7 @@ class PredictionResponse(BaseModel):
     probabilities: Probabilities
     latency_ms: float
     model_version: str
+    top_features: list[TopFeature]
 
 
 class HealthResponse(BaseModel):

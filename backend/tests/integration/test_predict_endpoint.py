@@ -18,6 +18,13 @@ _MOCK_PREDICT_RESULT = {
     "probabilities": {"no_object": 0.08, "fod_detected": 0.92},
     "latency_ms": 15.0,
     "model_version": "v1",
+    "top_features": [
+        {"name": "harmonic_2_ratio", "shap_value": 0.42},
+        {"name": "wav_entropy_approx", "shap_value": 0.31},
+        {"name": "time_mean", "shap_value": -0.18},
+        {"name": "ptp", "shap_value": 0.12},
+        {"name": "spec_centroid", "shap_value": -0.08},
+    ],
 }
 
 

@@ -23,3 +23,5 @@ repos:
           - pandas-stubs
           - pytest
           - prometheus-fastapi-instrumentator
+          - shap
+          - sqlalchemy

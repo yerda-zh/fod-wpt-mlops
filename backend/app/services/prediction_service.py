@@ -6,6 +6,7 @@ import pandas as pd
 from fastapi import HTTPException
 
 from backend.app.core import model_loader
+from backend.app.models.prediction import Prediction, SessionLocal
 
 MODEL_VERSION = "v1"
 
@@ -28,6 +29,24 @@ def run_prediction(file_bytes: bytes) -> dict:
         latency_ms = (time.perf_counter() - t0) * 1000
         result["latency_ms"] = latency_ms
         result["model_version"] = MODEL_VERSION
+
+        db = SessionLocal()
+        try:
+            db.add(
+                Prediction(
+                    prediction=result["prediction"],
+                    label=result["label"],
+                    confidence=result["confidence"],
+                    no_object_prob=result["probabilities"]["no_object"],
+                    fod_detected_prob=result["probabilities"]["fod_detected"],
+                    latency_ms=result["latency_ms"],
+                    model_version=result["model_version"],
+                )
+            )
+            db.commit()
+        finally:
+            db.close()
+
         return result
     except HTTPException:
         raise
