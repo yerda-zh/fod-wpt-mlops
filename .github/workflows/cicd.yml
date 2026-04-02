@@ -49,6 +49,29 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy placeholder
-        # TODO: fill in during Week 7-8 when EC2 is configured
-        run: echo "Deploy step — EC2 not yet configured"
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+              docker login --username AWS \
+              --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+            docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+
+            docker stop fod-api || true
+            docker rm fod-api || true
+
+            aws s3 sync s3://fod-wpt-mlops-artifacts/models/ ~/models/
+
+            docker run -d \
+              --name fod-api \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              -v ~/models:/app/models \
+              -e MODELS_DIR=/app/models \
+              -e PYTHONPATH=/app \
+              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
