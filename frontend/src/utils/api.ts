@@ -4,7 +4,7 @@ import type { HealthResponse, HistoryEntry, PredictionResponse } from "../types/
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:8000",
-  timeout: 10000,
+  timeout: 60000,
 });
 
 export async function predict(file: File): Promise<PredictionResponse> {
