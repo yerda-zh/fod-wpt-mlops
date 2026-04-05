@@ -25,3 +25,5 @@ repos:
           - prometheus-fastapi-instrumentator
           - shap
           - sqlalchemy
+          - boto3
+          - evidently
