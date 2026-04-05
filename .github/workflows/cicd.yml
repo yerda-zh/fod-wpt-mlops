@@ -75,3 +75,5 @@ jobs:
               -e MODELS_DIR=/app/models \
               -e PYTHONPATH=/app \
               ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+            
+            docker image prune -a -f --filter "until=24h"
