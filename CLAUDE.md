@@ -21,7 +21,17 @@ transmitter coil current waveforms to detect metallic objects on charging pads.
 - Training data: 3,680 samples (70/30 stratified split, z-score normalized)
 
 ## Current build phase
-Week 7-8: AWS deployment + Evidently drift detection
+Complete — all 8 weeks done
+
+## Production URL
+http://107.22.94.101
+
+## AWS resources
+- EC2: t3.small, us-east-1, Elastic IP 107.22.94.101
+- EBS: 20GB volume
+- S3: fod-wpt-mlops-artifacts (model files + drift reports)
+- ECR: fod-api repository
+- IAM: ec2-fod-role with ECR read + S3 read permissions
 
 ## Completed
 - feature_extractor.py — 49 features, FEATURE_ORDER, compute_feature_vector()
