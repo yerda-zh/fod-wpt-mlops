@@ -12,7 +12,7 @@ line-length = 88
 target-version = "py311"
 
 [[tool.mypy.overrides]]
-module = ["joblib", "pywt", "scipy.*", "sklearn.*", "prometheus_fastapi_instrumentator", "shap", "sqlalchemy", "sqlalchemy.*", "boto3", "botocore.*", "evidently", "evidently.*"]
+module = ["joblib", "pywt", "scipy.*", "sklearn.*", "prometheus_fastapi_instrumentator", "shap", "sqlalchemy", "sqlalchemy.*", "boto3", "botocore.*", "evidently", "evidently.*", "mlflow", "mlflow.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
