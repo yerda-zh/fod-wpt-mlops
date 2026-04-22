@@ -18,8 +18,7 @@ from mlflow import MlflowClient
 
 REGISTRY_NAME = "FOD-RandomForest"
 
-# Honour MLFLOW_TRACKING_URI from the environment; fall back to local mlruns/
-_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "mlruns")
+_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
 mlflow.set_tracking_uri(_TRACKING_URI)
 
 

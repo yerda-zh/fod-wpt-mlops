@@ -36,3 +36,4 @@ models/*.joblib
 
 .ipynb_checkpoints/
 mlruns/
+mlflow.db

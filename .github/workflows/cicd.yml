@@ -65,18 +65,19 @@ jobs:
             docker stop fod-api || true
             docker rm fod-api || true
 
-            aws s3 sync s3://fod-wpt-mlops-artifacts/models/ ~/models/
-
             mkdir -p ~/data
+            aws s3 sync s3://fod-wpt-mlops-artifacts/models/ ~/models/
+            aws s3 cp s3://fod-wpt-mlops-artifacts/mlflow/mlflow.db ~/data/mlflow.db
 
             docker run -d \
-            --name fod-api \
-            --restart unless-stopped \
-            -p 8000:8000 \
-            -v ~/models:/app/models \
-            -v ~/data:/app/data \
-            -e MODELS_DIR=/app/models \
-            -e PYTHONPATH=/app \
-            -e MPLCONFIGDIR=/tmp \
-            -e DATABASE_URL=sqlite:////app/data/fod.db \
-            ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+              --name fod-api \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              -v ~/models:/app/models \
+              -v ~/data:/app/data \
+              -e MODELS_DIR=/app/models \
+              -e PYTHONPATH=/app \
+              -e MPLCONFIGDIR=/tmp \
+              -e DATABASE_URL=sqlite:////app/data/fod.db \
+              -e MLFLOW_TRACKING_URI=sqlite:////app/data/mlflow.db \
+              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}

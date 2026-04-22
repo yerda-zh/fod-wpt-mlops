@@ -21,6 +21,6 @@ def health() -> HealthResponse:
     model_loader._load_artifacts()
     return HealthResponse(
         status="ok",
-        model_version=MODEL_VERSION,
+        model_version=f"{MODEL_VERSION} ({model_loader._model_source or 'unknown'})",
         timestamp=datetime.now(timezone.utc).isoformat(),
     )

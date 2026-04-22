@@ -14,6 +14,9 @@ import os
 import shap
 from typing import TypedDict
 
+import mlflow
+import mlflow.sklearn
+
 from backend.ml.pipelines.feature_extractor import FEATURE_ORDER, compute_feature_vector
 
 # 49 feature names the scaler was fitted on — same order as FEATURE_ORDER
@@ -34,6 +37,8 @@ SELECTED_FEATURES = [
 ]
 
 _MODELS_DIR = Path(os.getenv("MODELS_DIR", Path(__file__).parents[3] / "models"))
+_MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
+_REGISTRY_NAME = "FOD-RandomForest"
 
 
 class TopFeature(TypedDict):
@@ -44,18 +49,35 @@ class TopFeature(TypedDict):
 _scaler = None
 _model = None
 _explainer = None
+_model_source = None
 
 _LABELS = {0: "No object", 1: "FOD detected"}
 
 
+def _load_from_mlflow() -> tuple:
+    """Attempt to load model from MLflow registry. Returns (model, scaler) or raises."""
+    mlflow.set_tracking_uri(_MLFLOW_TRACKING_URI)
+    model = mlflow.sklearn.load_model(f"models:/{_REGISTRY_NAME}@Production")
+    # Scaler is logged as a separate artifact in the same run — load via joblib for now
+    scaler = joblib.load(_MODELS_DIR / "FOD_Scaler_20260202_173744.joblib")
+    return model, scaler
+
+
 def _load_artifacts() -> None:
-    """Load scaler and model from disk on first call; no-op on subsequent calls."""
-    global _scaler, _model, _explainer
+    global _scaler, _model, _explainer, _model_source
     if _scaler is None:
-        _scaler = joblib.load(_MODELS_DIR / "FOD_Scaler_20260202_173744.joblib")
-        _model = joblib.load(
-            _MODELS_DIR / "Random_Forest_(RF)_FOD_Model_20260202_173744.joblib"
-        )
+        try:
+            _model, _scaler = _load_from_mlflow()
+            _model_source = "mlflow"
+            print("Model loaded from MLflow registry (Production)")
+        except Exception as e:
+            print(f"MLflow load failed ({e}), falling back to joblib")
+            _scaler = joblib.load(_MODELS_DIR / "FOD_Scaler_20260202_173744.joblib")
+            _model = joblib.load(
+                _MODELS_DIR / "Random_Forest_(RF)_FOD_Model_20260202_173744.joblib"
+            )
+            _model_source = "joblib"
+            print("Model loaded from joblib files (fallback)")
         _explainer = shap.TreeExplainer(_model)
 
 
