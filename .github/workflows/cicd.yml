@@ -64,7 +64,8 @@ jobs:
 
             docker stop fod-api || true
             docker rm fod-api || true
-
+            docker system prune -a -f
+            
             mkdir -p ~/data
             aws s3 sync s3://fod-wpt-mlops-artifacts/models/ ~/models/
             aws s3 cp s3://fod-wpt-mlops-artifacts/mlflow/mlflow.db ~/data/mlflow.db
