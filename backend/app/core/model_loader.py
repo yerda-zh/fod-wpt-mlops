@@ -55,10 +55,35 @@ _LABELS = {0: "No object", 1: "FOD detected"}
 
 
 def _load_from_mlflow() -> tuple:
-    """Attempt to load model from MLflow registry. Returns (model, scaler) or raises."""
+    """Load model using MLflow registry for version metadata, artifacts from S3."""
+    import boto3
+
     mlflow.set_tracking_uri(_MLFLOW_TRACKING_URI)
-    model = mlflow.sklearn.load_model(f"models:/{_REGISTRY_NAME}@Production")
-    # Scaler is logged as a separate artifact in the same run — load via joblib for now
+    client = mlflow.MlflowClient()
+
+    # Find the Production version
+    versions = client.search_model_versions(f"name='{_REGISTRY_NAME}'")
+    production = [
+        v
+        for v in versions
+        if "Production" in (v.aliases or []) or v.current_stage == "Production"
+    ]
+
+    if not production:
+        raise ValueError("No Production model found in MLflow registry")
+
+    version = production[0].version
+    print(f"[mlflow] Production version: {version} — downloading from S3")
+
+    # Download model artifact from S3
+    s3 = boto3.client("s3")
+    s3.download_file(
+        "fod-wpt-mlops-artifacts",
+        "models/Random_Forest_(RF)_FOD_Model_20260202_173744.joblib",
+        "/tmp/fod_model.joblib",
+    )
+
+    model = joblib.load("/tmp/fod_model.joblib")
     scaler = joblib.load(_MODELS_DIR / "FOD_Scaler_20260202_173744.joblib")
     return model, scaler
 
