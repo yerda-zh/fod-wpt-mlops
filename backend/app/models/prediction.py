@@ -1,8 +1,10 @@
 import uuid
+import os
 from datetime import datetime
 
 from sqlalchemy import DateTime, Float, Integer, String, func, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
+from collections.abc import Generator
 
 
 class Base(DeclarativeBase):
@@ -28,11 +30,12 @@ class Prediction(Base):
     )
 
 
-engine = create_engine("sqlite:///./fod.db", connect_args={"check_same_thread": False})
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fod.db")
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine)
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
     db: Session = SessionLocal()
     try:
         yield db

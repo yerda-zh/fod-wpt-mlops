@@ -67,13 +67,16 @@ jobs:
 
             aws s3 sync s3://fod-wpt-mlops-artifacts/models/ ~/models/
 
+            mkdir -p ~/data
+
             docker run -d \
-              --name fod-api \
-              --restart unless-stopped \
-              -p 8000:8000 \
-              -v ~/models:/app/models \
-              -e MODELS_DIR=/app/models \
-              -e PYTHONPATH=/app \
-              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
-            
-            docker image prune -a -f --filter "until=24h"
+            --name fod-api \
+            --restart unless-stopped \
+            -p 8000:8000 \
+            -v ~/models:/app/models \
+            -v ~/data:/app/data \
+            -e MODELS_DIR=/app/models \
+            -e PYTHONPATH=/app \
+            -e MPLCONFIGDIR=/tmp \
+            -e DATABASE_URL=sqlite:////app/data/fod.db \
+            ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
