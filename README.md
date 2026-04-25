@@ -14,6 +14,7 @@ End-to-end MLOps system that deploys a Random Forest classifier detecting metall
 
 ### Predict — upload waveform, get result with SHAP explanations
 ![Predict page](docs/screenshots/screenshot_1.jpeg)
+
 ![Predict page](docs/screenshots/screenshot_2.jpeg)
 ![Predict page](docs/screenshots/screenshot_3.jpeg)
 
