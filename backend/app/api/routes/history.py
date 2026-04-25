@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 import boto3
@@ -42,8 +42,9 @@ def get_drift_latest(db: Session = Depends(get_db)) -> dict:
     today_str = today.isoformat()
 
     # Count today's predictions (UTC midnight to midnight)
-    day_start = datetime(today.year, today.month, today.day, tzinfo=timezone.utc)
+    day_start = datetime(today.year, today.month, today.day)
     day_end = day_start + timedelta(days=1)
+
     predictions_count: int = (
         db.query(Prediction)
         .filter(Prediction.created_at >= day_start, Prediction.created_at < day_end)

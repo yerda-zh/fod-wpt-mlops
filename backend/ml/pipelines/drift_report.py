@@ -22,10 +22,12 @@ from evidently.metric_preset import DataDriftPreset
 from evidently.report import Report
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
+import os
 
 # Resolve project root (this file is backend/ml/pipelines/drift_report.py)
 PROJECT_ROOT = Path(__file__).parents[3]
-DB_PATH = PROJECT_ROOT / "fod.db"
+_db_url = os.getenv("DATABASE_URL", f"sqlite:///{PROJECT_ROOT / 'fod.db'}")
+DB_PATH = Path(_db_url.replace("sqlite:///", "").replace("sqlite:////", "/"))
 
 S3_BUCKET = "fod-wpt-mlops-artifacts"
 LOCAL_REPORT_PATH = "/tmp/drift_report.html"
@@ -66,7 +68,8 @@ def _query_current_df(target_date: str) -> pd.DataFrame:
     from backend.app.models.prediction import Prediction  # noqa: PLC0415
 
     engine = create_engine(
-        f"sqlite:///{DB_PATH}", connect_args={"check_same_thread": False}
+        os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}"),
+        connect_args={"check_same_thread": False},
     )
     Session = sessionmaker(bind=engine)
 
