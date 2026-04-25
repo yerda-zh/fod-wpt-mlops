@@ -62,7 +62,14 @@ def get_drift_latest(db: Session = Depends(get_db)) -> dict:
         report_available = True
         # Generate presigned URL valid for 1 hour
         report_url = s3.generate_presigned_url(
-            "get_object", Params={"Bucket": S3_BUCKET, "Key": s3_key}, ExpiresIn=3600
+            "get_object",
+            Params={
+                "Bucket": S3_BUCKET,
+                "Key": s3_key,
+                "ResponseContentType": "text/html",
+                "ResponseContentDisposition": "inline",
+            },
+            ExpiresIn=3600,
         )
     except ClientError:
         pass
