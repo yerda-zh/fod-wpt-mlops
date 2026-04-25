@@ -57,9 +57,13 @@ def get_drift_latest(db: Session = Depends(get_db)) -> dict:
     report_url: Optional[str] = None
 
     try:
-        boto3.client("s3").head_object(Bucket=S3_BUCKET, Key=s3_key)
+        s3 = boto3.client("s3")
+        s3.head_object(Bucket=S3_BUCKET, Key=s3_key)
         report_available = True
-        report_url = f"https://{S3_BUCKET}.s3.amazonaws.com/{s3_key}"
+        # Generate presigned URL valid for 1 hour
+        report_url = s3.generate_presigned_url(
+            "get_object", Params={"Bucket": S3_BUCKET, "Key": s3_key}, ExpiresIn=3600
+        )
     except ClientError:
         pass
 
