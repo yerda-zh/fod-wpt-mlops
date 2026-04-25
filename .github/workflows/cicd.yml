@@ -81,4 +81,5 @@ jobs:
               -e MPLCONFIGDIR=/tmp \
               -e DATABASE_URL=sqlite:////app/data/fod.db \
               -e MLFLOW_TRACKING_URI=sqlite:////app/data/mlflow.db \
+              -e ALLOWED_ORIGINS=http://107.22.94.101 \
               ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
