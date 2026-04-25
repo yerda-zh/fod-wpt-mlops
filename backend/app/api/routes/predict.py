@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile
 
 from backend.app.core import model_loader
 from backend.app.schemas.prediction import HealthResponse, PredictionResponse
@@ -8,10 +8,14 @@ from backend.app.services.prediction_service import MODEL_VERSION, run_predictio
 
 router = APIRouter(prefix="", tags=["prediction"])
 
+MAX_UPLOAD_BYTES = 30 * 1024 * 1024  # 30 MB
+
 
 @router.post("/predict", response_model=PredictionResponse)
 async def predict(file: UploadFile) -> PredictionResponse:
     file_bytes = await file.read()
+    if len(file_bytes) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds the 30 MB limit.")
     result = run_prediction(file_bytes)
     return PredictionResponse(**result)
 

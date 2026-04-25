@@ -1,13 +1,15 @@
 import io
+import logging
 import time
 
 import numpy as np
 import pandas as pd
 from fastapi import HTTPException
 from datetime import datetime, timezone
-
 from backend.app.core import model_loader
 from backend.app.models.prediction import Prediction, SessionLocal
+
+logger = logging.getLogger(__name__)
 
 MODEL_VERSION = "v1"
 
@@ -21,7 +23,8 @@ def run_prediction(file_bytes: bytes) -> dict:
             usecols=["Time", "Ampl"],
         )
     except Exception as exc:
-        raise HTTPException(status_code=422, detail=f"CSV parse error: {exc}") from exc
+        logger.error("CSV parse error: %s", exc)
+        raise HTTPException(status_code=422, detail="Invalid CSV file.") from exc
 
     try:
         t = df["Time"].to_numpy(dtype=np.float64)
@@ -53,4 +56,5 @@ def run_prediction(file_bytes: bytes) -> dict:
     except HTTPException:
         raise
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Inference error: {exc}") from exc
+        logger.error("Inference error: %s", exc)
+        raise HTTPException(status_code=500, detail="Inference failed.") from exc

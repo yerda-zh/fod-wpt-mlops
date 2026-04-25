@@ -74,7 +74,7 @@ export default function PredictPage() {
 
       {/* Author */}
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 flex items-start gap-4">
-        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
+        <div className="shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
           Y
         </div>
         <div className="min-w-0 flex-1 space-y-1">

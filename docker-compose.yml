@@ -23,17 +23,13 @@ services:
     environment:
       POSTGRES_DB: fod_db
       POSTGRES_USER: fod_user
-      POSTGRES_PASSWORD: fod_pass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD env var is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     restart: unless-stopped
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
     restart: unless-stopped
 
   prometheus:
@@ -51,7 +47,7 @@ services:
     depends_on:
       - prometheus
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:?GF_SECURITY_ADMIN_PASSWORD env var is required}
       GF_SECURITY_ALLOW_EMBEDDING: true
       GF_AUTH_ANONYMOUS_ENABLED: true
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
