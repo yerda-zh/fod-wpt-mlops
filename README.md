@@ -10,8 +10,19 @@ End-to-end MLOps system that deploys a Random Forest classifier detecting metall
 
 **Live demo:** http://107.22.94.101
 
-> **Screenshots:** Predict page with SHAP chart, History table, Monitoring dashboard
-> *(add after taking screenshots)*
+## Screenshots
+
+### Predict — upload waveform, get result with SHAP explanations
+![Predict page](docs/screenshots/screenshot_1.jpeg)
+![Predict page](docs/screenshots/screenshot_2.jpeg)
+![Predict page](docs/screenshots/screenshot_3.jpeg)
+
+### History — browse all past predictions  
+![History page](docs/screenshots/screenshot_4.jpeg)
+
+### Monitoring — live Grafana metrics and drift detection
+![Monitoring page](docs/screenshots/screenshot_5.jpeg)
+![Monitoring page](docs/screenshots/screenshot_6.jpeg)
 
 ---
 
